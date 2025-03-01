@@ -34,6 +34,10 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="./multi">Multiplication Table</a>
+                    <li class="nav-item">
+                    <a class="nav-link" href="./minitest">minitest</a>
+                    <li class="nav-item">
+                    <a class="nav-link" href="./tran">transcript</a>
                 </li>
             </ul>
         </div>
