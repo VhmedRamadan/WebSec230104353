@@ -1,5 +1,4 @@
 <?php
-
 if (!function_exists('isPrime')) {
     function isPrime($number)
     {
@@ -12,11 +11,3 @@ if (!function_exists('isPrime')) {
         return true;
     }
 }
- if (!function_exists('isEven')) {
-    function isEven($number)
-    {
-        if($number%2==0) return true;
-        return false;
-    }
-} 
-?>
