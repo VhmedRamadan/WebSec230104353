@@ -55,7 +55,7 @@ class UsersController extends Controller
         // Log::info('Validated Data:', $validatedData);
 
         try {
-            $user = User::create([
+            User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => bcrypt(  $request->password),
@@ -63,7 +63,7 @@ class UsersController extends Controller
 
             // Log::info('User Created:', ['id' => $user->id]);
 
-            return redirect()->route('users.welcome')->with('success', 'User added successfully');
+            return redirect()->route('users.index')->with('success', 'User added successfully');
         } catch (\Exception $e) {
             Log::error('Error Storing User: ' . $e->getMessage());
             return back()->with('error', 'Failed to store user');
