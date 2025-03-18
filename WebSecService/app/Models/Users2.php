@@ -1,18 +1,21 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Users2 extends Model
 {
     public $timestamps = false;
-    protected $table = 'users2'; // Make sure this matches your DB table
+
+    protected $table = 'users2'; // Explicitly defining the table
 
     protected $fillable = [
         'name',
         'email',
         'password',
+        'privilege',
         'created_at',
         'updated_at'
-    ];
+    ]; // Allowing mass assignment
 }

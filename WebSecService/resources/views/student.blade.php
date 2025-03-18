@@ -2,14 +2,14 @@
 
 @section('content')
 <div class="container">
-    <h2>Users List</h2>
-    <a href="{{ route('users.create') }}" class="btn btn-success mb-3">Add User</a>
+    <h2>Student List</h2>
+    <a href="{{ route('student.create') }}" class="btn btn-success mb-3">Add Student</a>
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <!-- Search Form -->
-    <form method="GET" action="{{ route('users.index') }}" class="mb-3">
+    <form method="GET" action="{{ route('student.index') }}" class="mb-3">
         <div class="row">
             <div class="col-md-4">
                 <input type="text" name="search" class="form-control"
@@ -31,7 +31,7 @@
             </div>
             <div class="col-md-4">
                 <button type="submit" class="btn btn-primary">Filter</button>
-                <a href="{{ route('users.index') }}" class="btn btn-secondary">Reset</a>
+                <a href="{{ route('student.index') }}" class="btn btn-secondary">Reset</a>
             </div>
         </div>
     </form>
@@ -43,18 +43,22 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Age</th>
+                <th>Major</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($users as $user)
+            @foreach ($students as $student)
                 <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
+                    <td>{{ $student->id }}</td>
+                    <td>{{ $student->name }}</td>
+                    <td>{{ $student->email }}</td>
+                    <td>{{ $student->age }}</td>
+                    <td>{{ $student->major }}</td>
                     <td>
-                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit</a>
-                        <a href="{{ route('users.delete', $user->id) }}" class="btn btn-danger"
+                        <a href="{{ route('student.edit', $student->id) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ route('student.delete', $student->id) }}" class="btn btn-danger"
                            onclick="return confirm('Are you sure?')">Delete</a>
                     </td>
                 </tr>

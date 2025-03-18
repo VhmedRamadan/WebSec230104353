@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h2>Add User</h2>
-    <form action="{{ route('users.store') }}" method="POST">
+    <h2>Add Student</h2>
+    <form action="{{ route('student.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label>Name:</label>
@@ -17,8 +17,16 @@
             <label>Password:</label>
             <input type="password" name="password" class="form-control" required>
         </div>
+        <div class="mb-3">
+            <label>Age:</label>
+            <input type="number" name="age" class="form-control" min="16" required>
+        </div>
+        <div class="mb-3">
+            <label>Major:</label>
+            <input type="text" name="major" class="form-control" required>
+        </div>
         <button type="submit" class="btn btn-success">Save</button>
-        <!-- @if ($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
@@ -26,7 +34,7 @@
                     @endforeach
                 </ul>
             </div>
-        @endif -->
+        @endif
 
     </form>
 </div>

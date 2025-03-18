@@ -12,11 +12,6 @@ class Product extends Model {
 
     // The attributes that are mass assignable
     protected $fillable = [
-        'code',
-        'name',
-        'price',
-        'model',
-        'description',
-        'photo'
+        'code', 'name', 'price', 'model', 'description', 'photo'
     ];
 }

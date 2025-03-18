@@ -6,14 +6,9 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductCreateRequest;
 
 class ProductsController extends Controller
 {
-    public function create (ProductCreateRequests $request, product $product){
-        $newProduct= product::create($data);
-        return redirect('products.list');
-    }
     public function list(Request $request): View {
         $query = Product::query();
 
@@ -35,17 +30,35 @@ class ProductsController extends Controller
 
         return view('products.list', compact('products')); // Ensure it returns a View
     }
-    public function edit( ProductCreateRequest $request, Product $product = null) {
+
+    public function edit(Request $request, Product $product = null) {
+        // Restrict edit access to admin (privilege = 1)
+        if (auth()->user()->privilege != 1) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $product = $product ?? new Product(); // Create a new product if null
         return view("products.edit", compact('product'));
     }
-    public function save(ProductCreateRequest $request, Product $product = null) {
+
+    public function save(Request $request, Product $product = null) {
+        // Restrict save action to admin (privilege = 1)
+        if (auth()->user()->privilege != 1) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $product = $product ?? new Product();
         $product->fill($request->all());
         $product->save();
         return redirect()->route('products_list');
     }
+
     public function delete(Product $product) {
+        // Restrict delete action to admin (privilege = 1)
+        if (auth()->user()->privilege != 1) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $product->delete();
         return redirect()->route('products_list');
     }

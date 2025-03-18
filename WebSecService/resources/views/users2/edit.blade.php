@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Edit User</h2>
-    <form action="{{ route('users.update', $user->id) }}" method="POST">
+    <form action="{{ route('users2.update', $user->id) }}" method="POST">
         @csrf
         <div class="mb-3">
             <label>Name:</label>
@@ -16,6 +16,10 @@
         <div class="mb-3">
             <label>New Password (optional):</label>
             <input type="password" name="password" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>New Privilege (optional):</label>
+            <input type="number" name="privilege" class="form-control" min="-1" max="1" required>
         </div>
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
