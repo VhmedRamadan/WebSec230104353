@@ -3,8 +3,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable; // ✅ Use this instead of Model
 use Illuminate\Notifications\Notifiable;
-require base_path('vendor/autoload.php');
-use Spatie\Permission\src\Traits\HasRoles;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {

@@ -81,7 +81,11 @@
                                         <tr><th>Model</th><td>{{ $product->model }}</td></tr>
                                         <tr><th>Code</th><td>{{ $product->code }}</td></tr>
                                         <tr><th>Price</th><td>{{ $product->price }} LE</td></tr>
+                                        <tr><th>quantity</th><td>{{ $product->qty }}</td></tr>
                                         <tr><th>Description</th><td>{{ $product->description }}</td></tr>
+                                        @can('products_buy')
+                                            <a href="{{ route('products_edit', $product->id) }}" class="btn btn-success">buy</a>
+                                        @endcan
                                     </table>
                                 </div>
                             </div>
