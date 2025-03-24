@@ -1,47 +1,57 @@
 @extends('layouts.master')
-
+@section('title', 'Edit User')
 @section('content')
-<div class="container">
-    <h2>Edit User</h2>
-    <form action="{{ route('users.update', $user->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <div class="mb-3">
-            <label>Name:</label>
-            <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
-        </div>
-        <div class="mb-3">
-            <label>Email:</label>
-            <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
-        </div>
-        <div class="mb-3">
-            <label>New Password (optional):</label>
-            <input type="password" name="password" class="form-control">
-        </div>
-        @if(!auth()->user()->hasRole('Employee'))
-            <div class="mb-3">
-                <label>Role:</label>
-                <select name="role" class="form-select" required>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("#clean_permissions").click(function(){
+    $('#permissions').val([]);
+  });
+  $("#clean_roles").click(function(){
+    $('#roles').val([]);
+  });
+});
+</script>
+<div class="d-flex justify-content-center">
+    <div class="row m-4 col-sm-8">
+        <form action="{{route('users_save', $user->id)}}" method="post">
+            {{ csrf_field() }}
+            @foreach($errors->all() as $error)
+            <div class="alert alert-danger">
+            <strong>Error!</strong> {{$error}}
+            </div>
+            @endforeach
+            <div class="row mb-2">
+                <div class="col-12">
+                    <label for="code" class="form-label">Name:</label>
+                    <input type="text" class="form-control" placeholder="Name" name="name" required value="{{$user->name}}">
+                </div>
+            </div>
+            @can('admin_users')
+            <div class="col-12 mb-2">
+                <label for="model" class="form-label">Roles:</label> (<a href='#' id='clean_roles'>reset</a>)
+                <select multiple class="form-select" id='roles' name="roles[]">
                     @foreach($roles as $role)
-                        <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
-                            {{ ucfirst($role->name) }}
-                        </option>
+                    <option value='{{$role->name}}' {{$role->taken?'selected':''}}>
+                        {{$role->name}}
+                    </option>
                     @endforeach
                 </select>
             </div>
-            <div class="mb-3">
-                <label>Permissions:</label>
-                <div class="form-check">
-                    @foreach($permissions as $permission)
-                        <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" class="form-check-input" id="permission-{{ $permission->id }}" {{ $user->hasPermissionTo($permission->name) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="permission-{{ $permission->id }}">
-                            {{ ucfirst($permission->display_name) }}
-                        </label><br>
+            <div class="col-12 mb-2">
+                <label for="model" class="form-label">Direct Permissions:</label> (<a href='#' id='clean_permissions'>reset</a>)
+                <select multiple class="form-select" id='permissions' name="permissions[]">
+                @foreach($permissions as $permission)
+                    <option value='{{$permission->name}}' {{$permission->taken?'selected':''}}>
+                        {{$permission->display_name}}
+                    </option>
                     @endforeach
-                </div>
+                </select>
             </div>
-        @endif
-        <button type="submit" class="btn btn-primary">Update</button>
-    </form>
+            @endcan
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </div>
 @endsection
