@@ -51,4 +51,22 @@ class ProductsController extends Controller
         $product->delete();
         return redirect()->route('products_list');
     }
+    public function buyProduct($id)
+    {
+        $product = Product::findOrFail($id);
+
+        if ($product->qty > 0) {
+            $product->qty -= 1;
+            $product->save();
+
+            return response()->json([
+                'message' => 'Product purchased successfully!',
+                'remaining_quantity' => $product->quantity
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Product is out of stock!'
+            ], 400);
+        }
+    }
 }
