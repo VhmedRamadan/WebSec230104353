@@ -1,47 +1,31 @@
 @extends('layouts.master')
-
 @section('title', 'Login')
-
 @section('content')
-<div class="container mt-4">
-    <h2>Login</h2>
-
-    @foreach($errors->all() as $error)
-    <div class="alert alert-danger">
-        <strong>Error!</strong> {{$error}}
-    </div>
-    @endforeach
-
-    @if(session('error'))
-    <div class="alert alert-danger">
-        <strong>Error!</strong> {{ session('error') }}
-    </div>
-    @endif
-
-    @if(session('success'))
-    <div class="alert alert-success">
-        <strong>Success!</strong> {{ session('success') }}
-    </div>
-    @endif
-
-    <form action="{{ route('do_login') }}" method="post">
-        {{ csrf_field() }}
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+<div class="d-flex justify-content-center">
+  <div class="card m-4 col-sm-6">
+    <div class="card-body">
+      <form action="{{route('do_login')}}" method="post">
+      {{ csrf_field() }}
+      <div class="form-group">
+        @foreach($errors->all() as $error)
+        <div class="alert alert-danger">
+          <strong>Error!</strong> {{$error}}
         </div>
-
-        <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
-            <input type="password" class="form-control" name="password" required>
-        </div>
-
+        @endforeach
+      </div>
+      <div class="form-group mb-2">
+        <label for="model" class="form-label">Email:</label>
+        <input type="email" class="form-control" placeholder="email" name="email" required>
+      </div>
+      <div class="form-group mb-2">
+        <label for="model" class="form-label">Password:</label>
+        <input type="password" class="form-control" placeholder="password" name="password" required>
+      </div>
+      <div class="form-group mb-2">
         <button type="submit" class="btn btn-primary">Login</button>
+      </div>
     </form>
-
-    <div class="mt-3">
-        <a href="{{ route('password.request') }}" class="btn btn-link">Forget Password</a>
     </div>
+  </div>
 </div>
 @endsection
