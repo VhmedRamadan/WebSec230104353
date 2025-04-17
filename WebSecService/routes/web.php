@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Web\ForgetPasswordController;
+use Laravel\Socialite\Facades\Socialite;
 
 Route::get('register', [UsersController::class, 'register'])->name('register');
 Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
@@ -15,6 +16,24 @@ Route::get('/forgot-password', [ForgetPasswordController::class, 'showLinkReques
 Route::post('/forgot-password', [ForgetPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('/reset-password/{token}', [ForgetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [ForgetPasswordController::class, 'reset'])->name('password.update');
+Route::get('/login/facebook', function () {
+    return Socialite::driver('facebook')->redirect();
+})->name('facebook.login');
+Route::get('/login/facebook/callback', function () {
+    $facebookUser = Socialite::driver('facebook')->user();
+    $user = User::firstOrCreate(
+        ['email' => $facebookUser->getEmail()],
+        ['name' => $facebookUser->getName(), 'password' => bcrypt('facebook')]
+    );
+    Auth::login($user);
+    return redirect('/home');
+});
+Route::get('/auth/google',
+    [UsersController::class, 'redirectToGoogle'])
+        ->name('login_with_google');
+Route::get('/auth/google/callback',
+    [UsersController::class, 'handleGoogleCallback']);
+Route::get('verify', [UsersController::class, 'verify'])->name('verify');
 Route::middleware(['auth'])->group(function(){
     Route::get('users', [UsersController::class, 'list'])->name('users');
     Route::get('profile/{user?}', [UsersController::class, 'profile'])->name('profile');

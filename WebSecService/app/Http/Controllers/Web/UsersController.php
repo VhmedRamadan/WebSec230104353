@@ -9,6 +9,10 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use DB;
 use Artisan;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerificationEmail;
+use Carbon\Carbon;
 
 
 
@@ -53,7 +57,10 @@ class UsersController extends Controller {
 	    $user->password = bcrypt($request->password); //Secure
         $user->assignRole('customer');
 	    $user->save();
-
+        $title = "Verification Link";
+        $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
+        $link = route("verify", ['token' => $token]);
+        Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
         return redirect('/');
     }
 
@@ -65,6 +72,10 @@ class UsersController extends Controller {
     	
     	if(!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
             return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
+
+        if(!$user->email_verified_at)
+            return redirect()->back()->withInput($request->input())
+                ->withErrors('Your email is not verified.');
 
         $user = User::where('email', $request->email)->first();
         Auth::setUser($user);
@@ -219,8 +230,39 @@ class UsersController extends Controller {
         return redirect('/')->with('success', 'User created and role assigned!');
     }
     public function listCustomers()
-{
+    {
     $customers = User::role('customer')->get(); // Spatie method to filter by role
     return view('users.customers', compact('customers'));
-}
+    }
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+    public function handleGoogleCallback() {
+        try {
+        $googleUser = Socialite::driver('google')->user();
+        $user = User::updateOrCreate([
+        'google_id' => $googleUser->id,
+        ], [
+        'name' => $googleUser->name,
+        'email' => $googleUser->email,
+        'google_token' => $googleUser->token,
+        'google_refresh_token' => $googleUser->refreshToken,
+        ]);
+        Auth::login($user);
+        return redirect('/');
+        } catch (\Exception $e) {
+        return redirect('/login')->with('error', 'Google login failed.'); // Handle errors
+        }
+       }
+       public function verify(Request $request) {
+
+        $decryptedData = json_decode(Crypt::decryptString($request->token), true);
+        $user = User::find($decryptedData['id']);
+        if(!$user) abort(401);
+        $user->email_verified_at = Carbon::now();
+        $user->save();
+        
+        return view('users.verified', compact('user'));
+       }              
 } 
