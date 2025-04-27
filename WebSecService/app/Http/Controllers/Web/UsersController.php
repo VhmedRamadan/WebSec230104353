@@ -42,7 +42,7 @@ class UsersController extends Controller {
     		$this->validate($request, [
 	        'name' => ['required', 'string', 'min:5'],
 	        'email' => ['required', 'email', 'unique:users'],
-	        'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+	        'password' => ['required', 'confirmed', Password::min(5)],
 	    	]);
     	}
     	catch(\Exception $e) {
@@ -55,12 +55,14 @@ class UsersController extends Controller {
 	    $user->name = $request->name;
 	    $user->email = $request->email;
 	    $user->password = bcrypt($request->password); //Secure
-        $user->assignRole('customer');
-	    $user->save();
+        $user->save();
+        
+	    
         $title = "Verification Link";
         $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
         $link = route("verify", ['token' => $token]);
         Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
+        $user->assignRole('customer');
         return redirect('/');
     }
 

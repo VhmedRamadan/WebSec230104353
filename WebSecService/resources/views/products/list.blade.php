@@ -11,6 +11,7 @@
         @endcan
     </div>
 </div>
+
 <form>
     <div class="row">
         <div class="col col-sm-2">
@@ -44,8 +45,13 @@
         </div>
     </div>
 </form>
-
-
+@if(!empty(request()->keywords))
+    <div class='card mt-2'>
+        <div class='card-body'>
+            view search result: <span>{{!!request()->keywords!!}}</span>
+        </div>
+    </div>
+@endif
 @foreach($products as $product)
     <div class="card mt-2">
         <div class="card-body">

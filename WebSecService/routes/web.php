@@ -7,6 +7,24 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Web\ForgetPasswordController;
 use Laravel\Socialite\Facades\Socialite;
 
+// Route::get('/login/facebook', function () {
+// });
+
+Route::get('/collect', function (Request $request) {
+    $name = $request->query('name');
+    $credit = $request->query('credit');
+    return response('data collected',200)
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, X-requested-With');
+});
+
+// // Route::get('sqli', function (Request $request) {
+// //     $table = $request->query('table');
+// //     DB::unprepared("DROP TABLE $table");
+// //     return redirect('/');
+// // });
+
 Route::get('register', [UsersController::class, 'register'])->name('register');
 Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
 Route::get('login', [UsersController::class, 'login'])->name('login');
@@ -33,7 +51,10 @@ Route::get('/auth/google',
         ->name('login_with_google');
 Route::get('/auth/google/callback',
     [UsersController::class, 'handleGoogleCallback']);
+
 Route::get('verify', [UsersController::class, 'verify'])->name('verify');
+
+
 Route::middleware(['auth'])->group(function(){
     Route::get('users', [UsersController::class, 'list'])->name('users');
     Route::get('profile/{user?}', [UsersController::class, 'profile'])->name('profile');
@@ -46,7 +67,6 @@ Route::middleware(['auth'])->group(function(){
     Route::post('create', [UsersController::class, 'store'])->name('store');
     Route::get('customers', [UsersController::class, 'listCustomers'])->name('customers');
     Route::get('/insufficient-credit', function () {return view('users.insufficient');})->name('insufficient.credit');
-    Route::get('products', [ProductsController::class, 'list'])->name('products_list');
     Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
     Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
     Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
@@ -57,6 +77,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('products', [ProductsController::class, 'list'])->name('products_list');
 Route::get('/multable', function (Request $request) {
     $j = $request->number??5;
     $msg = $request->msg;
